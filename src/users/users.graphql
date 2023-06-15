@@ -1,6 +1,8 @@
 type User {
-  # Example field (placeholder)
-  exampleField: Int
+  id: String!
+  name: String
+  email: String!
+  age: Int
 }
 
 input CreateUserInput {
