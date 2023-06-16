@@ -15,6 +15,7 @@ export interface CreateUserInput {
 }
 
 export interface UpdateUserInput {
+    id: string;
     email?: Nullable<string>;
     name?: Nullable<string>;
     age?: Nullable<number>;
@@ -34,7 +35,7 @@ export interface IQuery {
 
 export interface IMutation {
     createUser(createUserInput: CreateUserInput): User | Promise<User>;
-    updateUser(id: string, updateUserInput: UpdateUserInput): User | Promise<User>;
+    updateUser(updateUserInput: UpdateUserInput): User | Promise<User>;
     removeUser(id: string): Nullable<boolean> | Promise<Nullable<boolean>>;
 }
 
