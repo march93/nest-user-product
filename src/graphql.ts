@@ -9,7 +9,9 @@
 /* eslint-disable */
 
 export interface CreateUserInput {
-    exampleField?: Nullable<number>;
+    email: string;
+    name?: Nullable<string>;
+    age?: Nullable<number>;
 }
 
 export interface UpdateUserInput {
@@ -18,14 +20,14 @@ export interface UpdateUserInput {
 
 export interface User {
     id: string;
-    name?: Nullable<string>;
     email: string;
+    name?: Nullable<string>;
     age?: Nullable<number>;
 }
 
 export interface IQuery {
     users(): Nullable<User>[] | Promise<Nullable<User>[]>;
-    user(id: number): Nullable<User> | Promise<Nullable<User>>;
+    user(id: string): Nullable<User> | Promise<Nullable<User>>;
 }
 
 export interface IMutation {
