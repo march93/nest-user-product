@@ -5,6 +5,8 @@ import { UsersModule } from './users/users.module';
 import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
+import { User } from './users/entities/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -15,6 +17,12 @@ import { join } from 'path';
         path: join(process.cwd(), 'src/graphql.ts'),
       },
       playground: true,
+    }),
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: 'development.db',
+      entities: [User],
+      synchronize: true,
     }),
     UsersModule,
   ],
