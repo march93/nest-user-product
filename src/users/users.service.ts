@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateUserInput, UpdateUserInput, User } from 'src/graphql';
+import { User as UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<User>,
+  ) {}
+
+  async create(createUserInput: CreateUserInput): Promise<User> {
+    return this.usersRepository.save(createUserInput);
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(): Promise<User[]> {
+    return this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string): Promise<User | null> {
+    const user = this.usersRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(`User:${id} not found`);
+    }
+
+    return user;
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserInput: UpdateUserInput): Promise<User> {
+    const user = await this.findOne(id);
+
+    // Merge object and ignore null values
+    const merged = {};
+    Object.keys({ ...user, ...updateUserInput }).map((key) => {
+      merged[key] = updateUserInput[key] || user[key];
+    });
+
+    return this.usersRepository.save(merged);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    const user = await this.findOne(id);
+
+    this.usersRepository.remove(user);
+    return true;
   }
 }
