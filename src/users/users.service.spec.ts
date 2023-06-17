@@ -71,6 +71,7 @@ describe('UsersService', () => {
       email: 'nic_cage@yahoo.com',
       name: 'Nic Cage',
       age: 35,
+      products: [],
     };
 
     it('should create a new user', async () => {
@@ -83,12 +84,12 @@ describe('UsersService', () => {
     });
 
     it('should create a new user with a product', async () => {
-      mockProductRepository.find.mockReturnValue(products);
-      mockUserRepository.create.mockReturnValue(user);
-      mockUserRepository.save.mockReturnValue(user);
-
       const userWithProduct = { ...user, products };
-      const newUser = await service.create(user);
+      mockProductRepository.find.mockReturnValue(products);
+      mockUserRepository.create.mockReturnValue(userWithProduct);
+      mockUserRepository.save.mockReturnValue(userWithProduct);
+
+      const newUser = await service.create(userWithProduct);
       expect(newUser).toMatchObject(userWithProduct);
     });
   });
