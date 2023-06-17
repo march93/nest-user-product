@@ -47,6 +47,8 @@ export class UsersResolver {
         return;
       }
 
+      // Format price to represent normal decimal amount
+      // Return existing value (null or undefined) if not set
       const price = f.price !== null ? f.price / 100 : f.price;
       return { ...f, price };
     });
