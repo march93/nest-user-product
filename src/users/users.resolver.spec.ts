@@ -136,10 +136,10 @@ describe('UsersResolver', () => {
     };
 
     it('should find and delete a user', async () => {
-      mockUserService.remove.mockResolvedValue(true);
+      mockUserService.remove.mockResolvedValue(user.id);
 
       const deleted = await resolver.remove(user.id);
-      expect(deleted).toBe(true);
+      expect(deleted).toBe(user.id);
     });
 
     it('should throw an error', async () => {
