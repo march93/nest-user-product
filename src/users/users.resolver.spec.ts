@@ -39,10 +39,14 @@ describe('UsersResolver', () => {
         name: 'Bob Saget',
         age: 66,
       };
-      mockUserService.create.mockResolvedValue({ ...user, id: '1234' });
+      mockUserService.create.mockResolvedValue({
+        ...user,
+        id: '1234',
+        products: [],
+      });
 
       const newUser = await resolver.create(user);
-      expect(newUser).toMatchObject({ ...user, id: '1234' });
+      expect(newUser).toMatchObject({ ...user, id: '1234', products: [] });
     });
   });
 
@@ -54,12 +58,14 @@ describe('UsersResolver', () => {
           email: 'billy@gmail.com',
           name: 'Billy Bob',
           age: 43,
+          products: [],
         },
         {
           id: '3456',
           email: 'serena@gmail.com',
           name: 'Serena Williams',
           age: 25,
+          products: [],
         },
       ];
       mockUserService.findAll.mockResolvedValue(users);
@@ -75,6 +81,7 @@ describe('UsersResolver', () => {
       email: 'tilda@gmail.com',
       name: 'Tilda Swinton',
       age: 33,
+      products: [],
     };
 
     it('should find and return a user', async () => {
@@ -101,6 +108,7 @@ describe('UsersResolver', () => {
       email: 'enrique@gmail.com',
       name: 'Enrique Inglesias',
       age: 41,
+      products: [],
     };
 
     it('should find and update a user', async () => {
@@ -133,6 +141,7 @@ describe('UsersResolver', () => {
       email: 'elton@gmail.com',
       name: 'Elton John',
       age: 77,
+      products: [],
     };
 
     it('should find and delete a user', async () => {
