@@ -24,7 +24,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Nest](https://github.com/nestjs/nest) project using GraphQL and SQlite.
 
 ## Installation
 
@@ -43,6 +43,187 @@ $ yarn run start:dev
 
 # production mode
 $ yarn run start:prod
+```
+
+## Relationships
+```
+user {
+  id: string (uuid)
+  email: string
+  name: string
+  age: int
+  products: Product[]
+}
+
+product {
+  id: string (uuid)
+  name: string
+  price: float
+}
+
+users_products {
+  user_id: string
+  product_id: string
+}
+
+Users <> Products (many to many relationship)
+```
+
+## Testing endpoints
+[GraphQL Playground](http://localhost:3000/graphql) will be available at once you start the server.
+
+### Users
+
+Queries for users
+
+```
+query user {
+  user(id: "user_id") {
+    id
+    email
+    name
+    age
+    products {
+      id
+      name
+      price
+    }
+  }
+}
+```
+
+```
+query users {
+  users {
+    id
+    email
+    name
+    age
+    products {
+      id
+      name
+      price
+    }
+  }
+}
+```
+
+Mutations for users <br />
+**When adding products, ids or names (case sensitive) can be used**
+
+```
+mutation createUser {
+  createUser(
+    createUserInput: { 
+      email: "email"
+      name: "name"
+      age: 100
+      products: ["list of product ids or names"]
+    }
+  ) {
+    id
+    email
+    name
+    age
+    products {
+      id
+      name
+      price
+    }
+  }
+}
+```
+
+```
+mutation updateUser {
+  updateUser(
+    updateUserInput: {
+      id: "user_id"
+      email: "email"
+      name: "name"
+      products: ["list of product ids or names"]
+    }
+  ) {
+    id
+    email
+    name
+    age
+    products {
+      id
+      name
+      price
+    }
+  }
+}
+```
+
+```
+mutation removeUser {
+  removeUser(id: "user_id")
+}
+```
+
+### Products
+
+Queries for products
+
+```
+query products {
+  products {
+    id
+    name
+    price
+  }
+}
+```
+
+```
+query product {
+  product(id: "product_id") {
+    id
+    name
+    price
+  }
+}
+```
+
+Mutations for products
+
+```
+mutation createProduct {
+  createProduct(
+    createProductInput: {
+      name: "name"
+      price: 9.99
+    }
+  ) {
+    id
+    name
+    price
+  }
+}
+```
+
+```
+mutation updateProduct {
+  updateProduct(
+    updateProductInput: {
+      id: "product_id"
+      name: "name",
+      price: 10.99
+    }
+  ) {
+    id
+    name
+    price
+  }
+}
+```
+
+```
+mutation removeProduct {
+  removeProduct(id: "product_id")
+}
 ```
 
 ## Test
