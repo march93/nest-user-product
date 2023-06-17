@@ -36,7 +36,7 @@ export interface IQuery {
 export interface IMutation {
     createUser(createUserInput: CreateUserInput): User | Promise<User>;
     updateUser(updateUserInput: UpdateUserInput): User | Promise<User>;
-    removeUser(id: string): Nullable<boolean> | Promise<Nullable<boolean>>;
+    removeUser(id: string): Nullable<string> | Promise<Nullable<string>>;
 }
 
 type Nullable<T> = T | null;

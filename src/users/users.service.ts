@@ -40,10 +40,10 @@ export class UsersService {
     return this.usersRepository.save(merged);
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<string> {
     const user = await this.findOne(id);
 
     this.usersRepository.remove(user);
-    return true;
+    return user.id;
   }
 }
