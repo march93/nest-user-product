@@ -77,7 +77,6 @@ export class UsersService {
     const userProducts = await this.productsRepository.find({
       where: [{ id: In(products) }, { name: In(products) }],
     });
-    console.log(userProducts, products, userProps);
 
     return { userProducts, userProps };
   }
