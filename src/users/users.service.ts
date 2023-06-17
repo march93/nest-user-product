@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, In, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateUserInput, Product, UpdateUserInput, User } from 'src/graphql';
 import { User as UserEntity } from './entities/user.entity';
 import { Product as ProductEntity } from '../products/entities/product.entity';
