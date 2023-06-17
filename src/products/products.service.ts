@@ -41,10 +41,9 @@ export class ProductsService {
     // Merge object and ignore null values
     const merged = {};
     Object.keys({ ...product, ...updateProductInput }).map((key) => {
-      merged[key] =
-        updateProductInput[key] !== null
-          ? updateProductInput[key]
-          : product[key];
+      merged[key] = !!updateProductInput[key]
+        ? updateProductInput[key]
+        : product[key];
     });
 
     return this.productRepository.save(merged);
