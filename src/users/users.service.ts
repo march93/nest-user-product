@@ -15,14 +15,9 @@ export class UsersService {
   ) {}
 
   async create(createUserInput: CreateUserInput): Promise<User> {
-    // De-structure input
-    const { products, ...userProps } = createUserInput;
-
-    // Get products from list
-    // Allow id or case-insensitive name search
-    const userProducts = await this.productsRepository.find({
-      where: [{ id: In(products) }, { name: ILike(In(products)) }],
-    });
+    const { userProducts, userProps } = await this.getUserProducts(
+      createUserInput,
+    );
 
     // Create new user and add products
     const user = this.usersRepository.create(userProps);
@@ -47,10 +42,16 @@ export class UsersService {
   async update(id: string, updateUserInput: UpdateUserInput): Promise<User> {
     const user = await this.findOne(id);
 
+    // Get user object with products
+    const { userProducts, userProps } = await this.getUserProducts(
+      updateUserInput,
+    );
+    user.products = userProducts;
+
     // Merge object and ignore null values
     const merged = {};
-    Object.keys({ ...user, ...updateUserInput }).map((key) => {
-      merged[key] = !!updateUserInput[key] ? updateUserInput[key] : user[key];
+    Object.keys({ ...user, ...userProps }).map((key) => {
+      merged[key] = !!userProps[key] ? userProps[key] : user[key];
     });
 
     return this.usersRepository.save(merged);
@@ -61,5 +62,23 @@ export class UsersService {
 
     this.usersRepository.remove(user);
     return user.id;
+  }
+
+  async getUserProducts(userInput: Partial<UpdateUserInput>) {
+    // De-structure input
+    const { products, ...userProps } = userInput;
+
+    if (!products.length) {
+      // Handle empty array case
+      return { userProducts: [], userProps };
+    }
+
+    // Get products from list
+    const userProducts = await this.productsRepository.find({
+      where: [{ id: In(products) }, { name: In(products) }],
+    });
+    console.log(userProducts, products, userProps);
+
+    return { userProducts, userProps };
   }
 }
