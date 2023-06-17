@@ -137,14 +137,15 @@ describe('UsersService', () => {
     };
 
     it('should delete a user', async () => {
+      mockUserRepository.findOne.mockReturnValue(user);
       mockUserRepository.remove.mockReturnValue(user);
 
       const deleted = await service.remove(user.id);
-      expect(deleted).toBe(true);
+      expect(deleted).toBe(user.id);
     });
 
     it('should fail to delete a user', async () => {
-      jest.spyOn(service, 'findOne').mockResolvedValue(null);
+      jest.spyOn(service, 'findOne').mockRejectedValue(new NotFoundException());
 
       try {
         await service.remove(user.id);
