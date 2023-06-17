@@ -1,34 +1,51 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { ProductsService } from './products.service';
-import { CreateProductInput } from './dto/create-product.input';
-import { UpdateProductInput } from './dto/update-product.input';
+import { CreateProductInput, Product, UpdateProductInput } from 'src/graphql';
 
 @Resolver('Product')
 export class ProductsResolver {
   constructor(private readonly productsService: ProductsService) {}
 
   @Mutation('createProduct')
-  create(@Args('createProductInput') createProductInput: CreateProductInput) {
-    return this.productsService.create(createProductInput);
+  async create(
+    @Args('createProductInput') createProductInput: CreateProductInput,
+  ) {
+    const product = await this.productsService.create(createProductInput);
+    return this.formatProduct(product);
   }
 
   @Query('products')
-  findAll() {
-    return this.productsService.findAll();
+  async findAll() {
+    const products = await this.productsService.findAll();
+    return products.map((f) => {
+      return this.formatProduct(f);
+    });
   }
 
   @Query('product')
-  findOne(@Args('id') id: number) {
-    return this.productsService.findOne(id);
+  async findOne(@Args('id') id: string) {
+    const product = await this.productsService.findOne(id);
+    return this.formatProduct(product);
   }
 
   @Mutation('updateProduct')
-  update(@Args('updateProductInput') updateProductInput: UpdateProductInput) {
-    return this.productsService.update(updateProductInput.id, updateProductInput);
+  async update(
+    @Args('updateProductInput') updateProductInput: UpdateProductInput,
+  ) {
+    const product = await this.productsService.update(
+      updateProductInput.id,
+      updateProductInput,
+    );
+    return this.formatProduct(product);
   }
 
   @Mutation('removeProduct')
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.productsService.remove(id);
+  }
+
+  formatProduct(product: Product) {
+    const price = product.price !== null ? product.price / 100 : product.price;
+    return { ...product, price };
   }
 }
