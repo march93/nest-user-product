@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
+import { Product } from 'src/products/entities/product.entity';
 
 type MockType<T> = {
   [P in keyof T]?: jest.Mock<object>;
@@ -11,14 +12,19 @@ type MockType<T> = {
 
 describe('UsersService', () => {
   let service: UsersService;
+  const products = [];
 
   // Create mock user repository for testing
   const mockUserRepository: MockType<Repository<User>> = {
+    create: jest.fn(),
     save: jest.fn(),
     find: jest.fn(),
     findOne: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
+  };
+  const mockProductRepository: MockType<Repository<Product>> = {
+    find: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -29,8 +35,27 @@ describe('UsersService', () => {
           provide: getRepositoryToken(User),
           useValue: mockUserRepository,
         },
+        {
+          provide: getRepositoryToken(Product),
+          useValue: mockProductRepository,
+        },
       ],
     }).compile();
+
+    // Create products beforehand
+    products.push([
+      {
+        id: 'fdgh',
+        name: 'Chips',
+        price: 999,
+      },
+      {
+        id: '1k9d',
+        name: 'Milk',
+        price: 899,
+      },
+    ]);
+    mockProductRepository.find.mockReturnValue(products);
 
     service = module.get<UsersService>(UsersService);
     jest.clearAllMocks();
@@ -41,17 +66,31 @@ describe('UsersService', () => {
   });
 
   describe('create', () => {
+    const user = {
+      id: '7890',
+      email: 'nic_cage@yahoo.com',
+      name: 'Nic Cage',
+      age: 35,
+      products: [],
+    };
+
     it('should create a new user', async () => {
-      const user = {
-        id: '7890',
-        email: 'nic_cage@yahoo.com',
-        name: 'Nic Cage',
-        age: 35,
-      };
+      mockProductRepository.find.mockReturnValue([]);
+      mockUserRepository.create.mockReturnValue(user);
       mockUserRepository.save.mockReturnValue(user);
 
       const newUser = await service.create(user);
       expect(newUser).toMatchObject(user);
+    });
+
+    it('should create a new user with a product', async () => {
+      const userWithProduct = { ...user, products };
+      mockProductRepository.find.mockReturnValue(products);
+      mockUserRepository.create.mockReturnValue(userWithProduct);
+      mockUserRepository.save.mockReturnValue(userWithProduct);
+
+      const newUser = await service.create(userWithProduct);
+      expect(newUser).toMatchObject(userWithProduct);
     });
   });
 
@@ -62,11 +101,13 @@ describe('UsersService', () => {
           email: 'john_wayne@msn.com',
           name: 'John Wayne',
           age: 70,
+          products,
         },
         {
           email: 'michael_jordan@nike.com',
           name: 'Michael Jordan',
           age: 60,
+          products,
         },
       ];
       mockUserRepository.find.mockReturnValue(users);
@@ -82,6 +123,7 @@ describe('UsersService', () => {
       email: 'james_cameron@netflix.com',
       name: 'James Cameron',
       age: 55,
+      products,
     };
 
     it('should find a user', async () => {
@@ -108,14 +150,20 @@ describe('UsersService', () => {
       email: 'john_wick@nyc.com',
       name: 'John Wick',
       age: 28,
+      products: [],
     };
 
     it('should update a user', async () => {
       jest.spyOn(service, 'findOne').mockResolvedValue(user);
-      mockUserRepository.save.mockReturnValue({ ...user, age: 40 });
+      mockUserRepository.save.mockReturnValue({ ...user, age: 40, products });
 
-      const updatedUser = await service.update(user.id, { ...user, age: 40 });
+      const updatedUser = await service.update(user.id, {
+        ...user,
+        age: 40,
+        products,
+      });
       expect(updatedUser.age).toBe(40);
+      expect(updatedUser.products).toMatchObject(products);
     });
 
     it('should throw error if user is not found', async () => {
@@ -135,6 +183,7 @@ describe('UsersService', () => {
       email: 'tina_turner@gmail.com',
       name: 'Tina Turner',
       age: 52,
+      products,
     };
 
     it('should delete a user', async () => {
