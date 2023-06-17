@@ -9,11 +9,14 @@
 /* eslint-disable */
 
 export interface CreateProductInput {
-    exampleField?: Nullable<number>;
+    name: string;
+    price?: Nullable<number>;
 }
 
 export interface UpdateProductInput {
-    id: number;
+    id: string;
+    name?: Nullable<string>;
+    price?: Nullable<number>;
 }
 
 export interface CreateUserInput {
@@ -30,12 +33,14 @@ export interface UpdateUserInput {
 }
 
 export interface Product {
-    exampleField?: Nullable<number>;
+    id: string;
+    name?: Nullable<string>;
+    price?: Nullable<number>;
 }
 
 export interface IQuery {
     products(): Nullable<Product>[] | Promise<Nullable<Product>[]>;
-    product(id: number): Nullable<Product> | Promise<Nullable<Product>>;
+    product(id: string): Nullable<Product> | Promise<Nullable<Product>>;
     users(): Nullable<User>[] | Promise<Nullable<User>[]>;
     user(id: string): Nullable<User> | Promise<Nullable<User>>;
 }
@@ -43,7 +48,7 @@ export interface IQuery {
 export interface IMutation {
     createProduct(createProductInput: CreateProductInput): Product | Promise<Product>;
     updateProduct(updateProductInput: UpdateProductInput): Product | Promise<Product>;
-    removeProduct(id: number): Nullable<Product> | Promise<Nullable<Product>>;
+    removeProduct(id: string): Nullable<string> | Promise<Nullable<string>>;
     createUser(createUserInput: CreateUserInput): User | Promise<User>;
     updateUser(updateUserInput: UpdateUserInput): User | Promise<User>;
     removeUser(id: string): Nullable<string> | Promise<Nullable<string>>;

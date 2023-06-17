@@ -1,24 +1,27 @@
 type Product {
-  # Example field (placeholder)
-  exampleField: Int
+  id: String!
+  name: String
+  price: Float
 }
 
 input CreateProductInput {
-  # Example field (placeholder)
-  exampleField: Int
+  name: String!
+  price: Float
 }
 
 input UpdateProductInput {
-  id: Int!
+  id: String!
+  name: String
+  price: Float
 }
 
 type Query {
   products: [Product]!
-  product(id: Int!): Product
+  product(id: String!): Product
 }
 
 type Mutation {
   createProduct(createProductInput: CreateProductInput!): Product!
   updateProduct(updateProductInput: UpdateProductInput!): Product!
-  removeProduct(id: Int!): Product
+  removeProduct(id: String!): String
 }
