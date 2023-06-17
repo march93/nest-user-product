@@ -23,6 +23,7 @@ export interface CreateUserInput {
     email: string;
     name?: Nullable<string>;
     age?: Nullable<number>;
+    products?: Nullable<Nullable<string>[]>;
 }
 
 export interface UpdateUserInput {
@@ -30,6 +31,7 @@ export interface UpdateUserInput {
     email?: Nullable<string>;
     name?: Nullable<string>;
     age?: Nullable<number>;
+    products?: Nullable<Nullable<string>[]>;
 }
 
 export interface Product {
@@ -59,6 +61,7 @@ export interface User {
     email?: Nullable<string>;
     name?: Nullable<string>;
     age?: Nullable<number>;
+    products: Product[];
 }
 
 type Nullable<T> = T | null;

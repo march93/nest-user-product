@@ -1,18 +1,34 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateUserInput, UpdateUserInput, User } from 'src/graphql';
+import { ILike, In, Repository } from 'typeorm';
+import { CreateUserInput, Product, UpdateUserInput, User } from 'src/graphql';
 import { User as UserEntity } from './entities/user.entity';
+import { Product as ProductEntity } from '../products/entities/product.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<User>,
+    @InjectRepository(ProductEntity)
+    private productsRepository: Repository<Product>,
   ) {}
 
   async create(createUserInput: CreateUserInput): Promise<User> {
-    return this.usersRepository.save(createUserInput);
+    // De-structure input
+    const { products, ...userProps } = createUserInput;
+
+    // Get products from list
+    // Allow id or case-insensitive name search
+    const userProducts = await this.productsRepository.find({
+      where: [{ id: In(products) }, { name: ILike(In(products)) }],
+    });
+
+    // Create new user and add products
+    const user = this.usersRepository.create(userProps);
+    user.products = userProducts;
+
+    return this.usersRepository.save(user);
   }
 
   async findAll(): Promise<User[]> {

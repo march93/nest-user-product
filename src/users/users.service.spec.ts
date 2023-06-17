@@ -62,11 +62,13 @@ describe('UsersService', () => {
           email: 'john_wayne@msn.com',
           name: 'John Wayne',
           age: 70,
+          products: [],
         },
         {
           email: 'michael_jordan@nike.com',
           name: 'Michael Jordan',
           age: 60,
+          products: [],
         },
       ];
       mockUserRepository.find.mockReturnValue(users);
@@ -108,6 +110,7 @@ describe('UsersService', () => {
       email: 'john_wick@nyc.com',
       name: 'John Wick',
       age: 28,
+      products: [],
     };
 
     it('should update a user', async () => {

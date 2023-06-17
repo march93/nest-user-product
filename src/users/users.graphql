@@ -1,14 +1,18 @@
+#import Product from "products.graphql"
+
 type User {
   id: String!
   email: String
   name: String
   age: Int
+  products: [Product!]!
 }
 
 input CreateUserInput {
   email: String!
   name: String
   age: Int
+  products: [String]
 }
 
 input UpdateUserInput {
@@ -16,6 +20,7 @@ input UpdateUserInput {
   email: String
   name: String
   age: Int
+  products: [String]
 }
 
 type Query {
