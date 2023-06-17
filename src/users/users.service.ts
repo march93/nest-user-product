@@ -34,7 +34,8 @@ export class UsersService {
     // Merge object and ignore null values
     const merged = {};
     Object.keys({ ...user, ...updateUserInput }).map((key) => {
-      merged[key] = updateUserInput[key] || user[key];
+      merged[key] =
+        updateUserInput[key] !== null ? updateUserInput[key] : user[key];
     });
 
     return this.usersRepository.save(merged);

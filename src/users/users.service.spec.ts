@@ -92,7 +92,7 @@ describe('UsersService', () => {
     });
 
     it('should fail to find a user', async () => {
-      jest.spyOn(service, 'findOne').mockResolvedValue(null);
+      mockUserRepository.findOne.mockReturnValue(null);
 
       try {
         await service.findOne(user.id);
@@ -111,6 +111,7 @@ describe('UsersService', () => {
     };
 
     it('should update a user', async () => {
+      jest.spyOn(service, 'findOne').mockResolvedValue(user);
       mockUserRepository.save.mockReturnValue({ ...user, age: 40 });
 
       const updatedUser = await service.update(user.id, { ...user, age: 40 });
@@ -118,7 +119,7 @@ describe('UsersService', () => {
     });
 
     it('should throw error if user is not found', async () => {
-      jest.spyOn(service, 'findOne').mockResolvedValue(null);
+      jest.spyOn(service, 'findOne').mockRejectedValue(new NotFoundException());
 
       try {
         await service.update('4567', { ...user, age: 38 });
